@@ -1,5 +1,5 @@
 <template>
-  <div class="px-6 py-2 sm:px-16">
+  <div class="px-6 py-2 sm:px-16 max-w-4xl" style="margin: 0 auto">
     <div>
       <Settings :open="false"></Settings>
     </div>
@@ -37,7 +37,7 @@
         class="text-[30px] ml-4" @submit="onSubmit" />
     </div>
     <div class="flex justify-center items-center py-24">
-      <OptionGroup :options="options"></OptionGroup>
+      <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
     </div>
   </div>
 </template>
@@ -66,6 +66,15 @@ const nextQuestion = () => {
 }
 onMounted(nextQuestion)
 
+const onChoose = (v: string) => {
+  (blank.value.fill as { [key: string]: string })[blank.value.blank] = v
+  if (blank.value.blank === 'hira') {
+    hiraBlankRef.value?.$el.children[0].focus()
+  } else {
+    kanaBlankRef.value?.$el.children[0].focus()
+  }
+  setTimeout(onSubmit, 1000)
+}
 const onSubmit = () => {
   let filled = (blank.value.fill as { [key: string]: string })[blank.value.blank]
   let answer = (blank.value.answer as { [key: string]: string })[blank.value.blank]

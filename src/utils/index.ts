@@ -98,14 +98,27 @@ function randomlySelect<T>(array: T[], count: number): T[] {
 export function generateOptions(oto: Oto, blankType: string): string[] {
   const otoType = HIRA_TO_OTO_TYPE[oto.hira];
   const list = OTO_TYPE_TO_LIST[otoType];
+  const result = [];
   switch (blankType) {
     case "hira":
-      return randomlySelect(list, GLOBAL_CONFIG.optionCount).map((o) => o.hira);
+      result.push(
+        ...randomlySelect(list, GLOBAL_CONFIG.optionCount - 1).map(
+          (o) => o.hira
+        )
+      );
+      break;
     case "kana":
-      return randomlySelect(list, GLOBAL_CONFIG.optionCount).map((o) => o.kana);
+      result.push(
+        ...randomlySelect(list, GLOBAL_CONFIG.optionCount - 1).map(
+          (o) => o.kana
+        )
+      );
+      break;
     default:
       return [];
   }
+  result.push((oto as { [key: string]: string })[blankType]);
+  return result;
 }
 
 export function stringifyDuration(duration: number) {
