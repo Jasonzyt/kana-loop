@@ -1,9 +1,11 @@
 <template>
   <div>
-    <h2 class="text-2xl text-gray-900 font-bold">Results</h2>
-    <p class="text-gray-800">Accuracy: <span :class="color" class="text-[40px]">{{ accuracy }}%</span></p>
-    <p class="text-gray-800">Time Elapsed: <span class="text-[30px] text-sky-500">{{ stringifyDuration(Date.now() -
-      GLOBAL_CONFIG.startTime) }}</span></p>
+    <h2 class="text-2xl text-gray-900 dark:text-gray-100 font-bold">Results</h2>
+    <p class="text-gray-800 dark:text-gray-100">Accuracy: <span :class="color" class="text-[40px]">{{ accuracy
+        }}%</span></p>
+    <p class="text-gray-800 dark:text-gray-100">Time Elapsed: <span class="text-[30px] text-sky-500">{{
+      stringifyDuration(Date.now() -
+        GLOBAL_CONFIG.startTime) }}</span></p>
   </div>
 </template>
 

@@ -48,7 +48,7 @@
       <UPopover mode="hover">
         <UButton color="gray" variant="ghost" size="xl" icon="i-uil-cog" @click="settingsOpen = true" />
         <template #panel>
-          <div class="py-2 px-3 text-gray-700">
+          <div class="py-2 px-3 text-gray-700 dark:text-gray-300">
             Settings
           </div>
         </template>
@@ -56,7 +56,7 @@
       <UPopover mode="hover">
         <UButton color="gray" variant="ghost" size="xl" icon="i-ic-baseline-restart-alt" @click="restart" />
         <template #panel>
-          <div class="py-2 px-3 text-gray-700">
+          <div class="py-2 px-3 text-gray-700 dark:text-gray-300">
             Restart
           </div>
         </template>
@@ -65,7 +65,7 @@
       <UPopover mode="hover">
         <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" @click="infoOpen = true" />
         <template #panel>
-          <div class="py-2 px-3 text-gray-700">
+          <div class="py-2 px-3 text-gray-700 dark:text-gray-300">
             Info
           </div>
         </template>
