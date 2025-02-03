@@ -7,7 +7,7 @@
           <p>{{ GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount }}</p>
         </div>
         <div class="grow px-4">
-          <UMeterGroup :min="0" :max="max" :ui="{ list: 'hidden' }">
+          <UProgress :min="0" :max="GLOBAL_CONFIG.totalCount" :value="GLOBAL_CONFIG.currentCount">
             <template #indicator>
               <div v-if="GLOBAL_CONFIG.totalCount > 0" class="text-center">
                 {{ GLOBAL_CONFIG.currentCount }} / {{ GLOBAL_CONFIG.totalCount }}
@@ -16,9 +16,7 @@
                 ∞
               </div>
             </template>
-            <UMeter :value="GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount" color="sky" />
-            <UMeter :value="GLOBAL_CONFIG.mistakeCount" color="red" />
-          </UMeterGroup>
+          </UProgress>
           <p class="text-center text-gray-500 text-sm mt-2">{{ stringifyDuration(duration) }}</p>
         </div>
         <div class="text-center py-4">
@@ -71,10 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-const max = GLOBAL_CONFIG.totalCount > 0 ? ref(GLOBAL_CONFIG.totalCount) : ref(GLOBAL_CONFIG.currentCount)
-if (max.value === 0) {
-  max.value = 1
-}
+loadConfig()
 
 const settingsOpen = ref(false)
 
@@ -83,6 +78,7 @@ const options = ref<string[]>();
 const hiraBlankRef = useTemplateRef('hiraBlank')
 const kanaBlankRef = useTemplateRef('kanaBlank')
 const outline = ref('focus:ring-sky-500')
+let submitted = false;
 
 const nextQuestion = () => {
   outline.value = "focus:ring-sky-500"
@@ -94,15 +90,18 @@ const nextQuestion = () => {
   } else {
     kanaBlankRef.value?.$el.children[0].focus()
   }
+  submitted = false
 }
 const restart = () => {
   GLOBAL_CONFIG.started = false;
+  duration.value = 0;
   GLOBAL_CONFIG.currentCount = 0;
   GLOBAL_CONFIG.mistakeCount = 0;
 }
 onMounted(nextQuestion)
 
 const onChoose = (v: string) => {
+  if (submitted) return
   (blank.value.fill as { [key: string]: string })[blank.value.blank] = v
   if (blank.value.blank === 'hira') {
     hiraBlankRef.value?.$el.children[0].focus()
@@ -112,6 +111,7 @@ const onChoose = (v: string) => {
   setTimeout(onSubmit, 1000)
 }
 const onSubmit = () => {
+  if (submitted) return
   let filled = (blank.value.fill as { [key: string]: string })[blank.value.blank]
   let answer = (blank.value.answer as { [key: string]: string })[blank.value.blank]
   if (filled === '') {
@@ -120,6 +120,7 @@ const onSubmit = () => {
     return
   }
   GLOBAL_CONFIG.currentCount++
+  submitted = true
   if (!GLOBAL_CONFIG.started) {
     GLOBAL_CONFIG.startTime = Date.now()
     GLOBAL_CONFIG.started = true
@@ -155,4 +156,8 @@ setInterval(() => {
 }, 1000)
 </script>
 
-<style></style>
+<style>
+body {
+  font-family: v-bind('GLOBAL_CONFIG.fonts'), 'Noto Sans JP', sans-serif;
+}
+</style>

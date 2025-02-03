@@ -85,7 +85,7 @@ export function generateBlank() {
   return { fill, answer, blank };
 }
 
-function randomlySelect<T>(array: T[], count: number): T[] {
+function selectRandomly<T>(array: T[], count: number): T[] {
   const result: T[] = [];
   while (count-- > 0) {
     let index = Math.floor(Math.random() * array.length);
@@ -93,6 +93,11 @@ function randomlySelect<T>(array: T[], count: number): T[] {
     array.splice(index, 1);
   }
   return result;
+}
+
+function insertRandomly(element: any, array: any[]) {
+  const randomIndex = Math.floor(Math.random() * (array.length + 1));
+  array.splice(randomIndex, 0, element);
 }
 
 export function generateOptions(oto: Oto, blankType: string): string[] {
@@ -106,14 +111,14 @@ export function generateOptions(oto: Oto, blankType: string): string[] {
   switch (blankType) {
     case "hira":
       result.push(
-        ...randomlySelect(list, GLOBAL_CONFIG.optionCount - 1).map(
+        ...selectRandomly(list, GLOBAL_CONFIG.optionCount - 1).map(
           (o) => o.hira
         )
       );
       break;
     case "kana":
       result.push(
-        ...randomlySelect(list, GLOBAL_CONFIG.optionCount - 1).map(
+        ...selectRandomly(list, GLOBAL_CONFIG.optionCount - 1).map(
           (o) => o.kana
         )
       );
@@ -121,7 +126,7 @@ export function generateOptions(oto: Oto, blankType: string): string[] {
     default:
       return [];
   }
-  result.push((oto as { [key: string]: string })[blankType]);
+  insertRandomly((oto as { [key: string]: string })[blankType], result);
   return result;
 }
 
