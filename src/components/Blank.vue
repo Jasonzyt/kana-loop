@@ -1,6 +1,6 @@
 <template>
-  <UInput :modelValue="value" :disabled="disabled" :autofocus="!disabled" size="xl" color="white"
-    @keydown.enter="$emit('submit')" @update:modelValue="value = $event"
+  <UInput :modelValue="value" :disabled="disabled" size="xl" color="white" @keydown.enter="$emit('submit')"
+    @update:modelValue="value = $event"
     :ui="{ wrapper: 'inline-block', base: 'size-16 select-none disabled:opacity-100 text-center', padding: { xl: 'p-0.5' }, size: { xl: 'text-[1em]' }, color: { white: { outline: outline } } }" />
 </template>
 
