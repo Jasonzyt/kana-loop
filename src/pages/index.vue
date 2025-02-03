@@ -36,7 +36,7 @@
       <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
         class="text-[30px] ml-4" @submit="onSubmit" />
     </div>
-    <div class="flex justify-center items-center py-24">
+    <div class="flex justify-center items-center py-24 sm:mt-16">
       <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
     </div>
   </div>
@@ -57,12 +57,13 @@ const outline = ref('focus:ring-sky-500')
 const nextQuestion = () => {
   outline.value = "focus:ring-sky-500"
   blank.value = generateBlank()
+  options.value = generateOptions(blank.value.answer, blank.value.blank)
+  // TODO: fix outline
   if (blank.value.blank === 'hira') {
     hiraBlankRef.value?.$el.children[0].focus()
   } else {
     kanaBlankRef.value?.$el.children[0].focus()
   }
-  options.value = generateOptions(blank.value.answer, blank.value.blank)
 }
 onMounted(nextQuestion)
 
