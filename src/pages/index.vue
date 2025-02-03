@@ -24,16 +24,23 @@
           <p>{{ GLOBAL_CONFIG.mistakeCount }}</p>
         </div>
       </div>
-      <div class="pt-8 sm:pt-16 text-center">
-        <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4"
-          :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
-        <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline"
-          class="text-[30px]" @submit="onSubmit" />
-        <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
-          class="text-[30px] ml-4" @submit="onSubmit" />
+      <div v-if="!showResult">
+        <div class="pt-8 sm:pt-16 text-center">
+          <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4"
+            :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
+          <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline"
+            class="text-[30px]" @submit="onSubmit" />
+          <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
+            class="text-[30px] ml-4" @submit="onSubmit" />
+        </div>
+        <div class="flex justify-center items-center py-24 sm:mt-16">
+          <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
+        </div>
       </div>
-      <div class="flex justify-center items-center py-24 sm:mt-16">
-        <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
+      <div v-else class="text-center mt-6 sm:mt-10">
+        <Result />
+        <UButton color="gray" variant="solid" size="xl" icon="i-ic-baseline-restart-alt" label="Restart" class="mt-12"
+          @click="restart" />
       </div>
     </div>
     <div class="grow" />
@@ -56,7 +63,7 @@
       </UPopover>
       <div class="grow" />
       <UPopover mode="hover">
-        <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" />
+        <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" @click="infoOpen = true" />
         <template #panel>
           <div class="py-2 px-3 text-gray-700">
             Info
@@ -66,12 +73,19 @@
     </div>
   </div>
   <Settings v-model="settingsOpen" />
+  <Info v-model="infoOpen" />
 </template>
 
 <script lang="ts" setup>
 loadConfig()
 
 const settingsOpen = ref(false)
+const infoOpen = ref(false)
+const showResult = ref(false)
+
+if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
+  showResult.value = true
+}
 
 const blank = ref(generateBlank());
 const options = ref<string[]>();
@@ -92,11 +106,17 @@ const nextQuestion = () => {
   }
   submitted = false
 }
+const finishRound = () => {
+  GLOBAL_CONFIG.started = false
+  showResult.value = true
+}
 const restart = () => {
+  showResult.value = false
   GLOBAL_CONFIG.started = false;
   duration.value = 0;
   GLOBAL_CONFIG.currentCount = 0;
   GLOBAL_CONFIG.mistakeCount = 0;
+  nextQuestion()
 }
 onMounted(nextQuestion)
 
@@ -127,14 +147,18 @@ const onSubmit = () => {
   }
   if (answer !== filled) {
     GLOBAL_CONFIG.mistakeCount++
-    if (GLOBAL_CONFIG.weights[blank.value.answer.hira]) {
-      GLOBAL_CONFIG.weights[blank.value.answer.hira]++
-    } else {
+    if (GLOBAL_CONFIG.weights[blank.value.answer.hira] === undefined) {
       GLOBAL_CONFIG.weights[blank.value.answer.hira] = 1
+    } else {
+      GLOBAL_CONFIG.weights[blank.value.answer.hira]++
     }
     blank.value.fill = blank.value.answer
     outline.value = "focus:ring-red-500"
-    setTimeout(nextQuestion, 2000)
+    if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
+      setTimeout(finishRound, 500)
+    } else {
+      setTimeout(nextQuestion, 2000)
+    }
   } else {
     if (GLOBAL_CONFIG.weights[blank.value.answer.hira]) {
       GLOBAL_CONFIG.weights[blank.value.answer.hira]--
@@ -143,7 +167,11 @@ const onSubmit = () => {
       }
     }
     outline.value = "focus:ring-green-500"
-    setTimeout(nextQuestion, 500)
+    if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
+      setTimeout(finishRound, 500)
+    } else {
+      setTimeout(nextQuestion, 500)
+    }
   }
   saveConfig()
 }
