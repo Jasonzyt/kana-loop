@@ -8,7 +8,7 @@ class Config {
   public blankHira: boolean = true; // fill in blank
   public blankKana: boolean = true;
   // public blankRomaji: boolean = false;
-  public totalCount: number = 0; // 0 for endless
+  public totalCount: number = 10; // 0 for endless
   public currentCount: number = 0;
   public mistakeCount: number = 0;
   public startTime: number = Date.now();
@@ -16,6 +16,7 @@ class Config {
   public weights: Record<string, number> = {};
   public fonts: string = '"Noto Sans JP"';
   public lastNoticeTime: string = "";
+  public optionCount: 4 | 6 | 8 | 10 | 12 = 6;
   [key: string]: any;
 
   public deserialize(jsonStr: string) {

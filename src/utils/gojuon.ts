@@ -570,3 +570,9 @@ export const HIRA_TO_OTO = (function () {
   }
   return result;
 })();
+
+export const OTO_TYPE_TO_LIST = {
+  seion: SEION_LIST,
+  dakuon: DAKUON_LIST,
+  youon: YOUON_LIST,
+};

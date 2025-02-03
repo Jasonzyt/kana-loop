@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 sm:px-16">
+  <div class="px-6 py-2 sm:px-16">
     <div>
       <Settings :open="false"></Settings>
     </div>
@@ -29,9 +29,15 @@
       </div>
     </div>
     <div class="pt-8 sm:pt-16 text-center">
-      <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4" :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
-      <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline" class="text-[30px]" @submit="onSubmit" />
-      <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline" class="text-[30px] ml-4" @submit="onSubmit" />
+      <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4"
+        :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
+      <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline"
+        class="text-[30px]" @submit="onSubmit" />
+      <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
+        class="text-[30px] ml-4" @submit="onSubmit" />
+    </div>
+    <div class="flex justify-center items-center py-24">
+      <OptionGroup :options="options"></OptionGroup>
     </div>
   </div>
 </template>
@@ -43,6 +49,7 @@ if (max.value === 0) {
 }
 
 const blank = ref(generateBlank());
+const options = ref<string[]>();
 const hiraBlankRef = useTemplateRef('hiraBlank')
 const kanaBlankRef = useTemplateRef('kanaBlank')
 const outline = ref('focus:ring-sky-500')
@@ -55,12 +62,13 @@ const nextQuestion = () => {
   } else {
     kanaBlankRef.value?.$el.children[0].focus()
   }
+  options.value = generateOptions(blank.value.answer, blank.value.blank)
 }
 onMounted(nextQuestion)
 
 const onSubmit = () => {
-  let filled = (blank.value.fill as {[key: string]: string})[blank.value.blank]
-  let answer = (blank.value.answer as {[key: string]: string})[blank.value.blank]
+  let filled = (blank.value.fill as { [key: string]: string })[blank.value.blank]
+  let answer = (blank.value.answer as { [key: string]: string })[blank.value.blank]
   if (filled === '') {
     outline.value = "focus:ring-red-500"
     setTimeout(() => outline.value = "focus:ring-sky-500", 2000)

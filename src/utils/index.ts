@@ -80,9 +80,32 @@ export function generateBlank() {
   let list = getWeightedList();
   let answer = list[Math.floor(Math.random() * list.length)];
   let blank = getRandomBlankType();
-  let fill = answer;
+  let fill = { ...answer };
   (fill as { [key: string]: string })[blank] = "";
   return { fill, answer, blank };
+}
+
+function randomlySelect<T>(array: T[], count: number): T[] {
+  const result: T[] = [];
+  while (count-- > 0) {
+    let index = Math.floor(Math.random() * array.length);
+    result.push(array[index]);
+    array.splice(index, 1);
+  }
+  return result;
+}
+
+export function generateOptions(oto: Oto, blankType: string): string[] {
+  const otoType = HIRA_TO_OTO_TYPE[oto.hira];
+  const list = OTO_TYPE_TO_LIST[otoType];
+  switch (blankType) {
+    case "hira":
+      return randomlySelect(list, GLOBAL_CONFIG.optionCount).map((o) => o.hira);
+    case "kana":
+      return randomlySelect(list, GLOBAL_CONFIG.optionCount).map((o) => o.kana);
+    default:
+      return [];
+  }
 }
 
 export function stringifyDuration(duration: number) {
