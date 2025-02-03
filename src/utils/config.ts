@@ -15,7 +15,7 @@ class Config {
   public started: boolean = false;
   public weights: Record<string, number> = {};
   public fonts: string = '"Noto Sans JP"';
-  public lastNoticeTime: string = "";
+  // public lastNoticeTime: string = "";
   public optionCount: 4 | 6 | 8 | 10 | 12 = 6;
   [key: string]: any;
 

@@ -1,45 +1,51 @@
 <template>
-  <div class="px-6 py-2 sm:px-16 max-w-4xl" style="margin: 0 auto">
+  <div class="flex flex-col px-6 py-2 sm:px-16 max-w-3xl h-[98vh]" style="margin: 0 auto">
     <div>
-      <Settings :open="false"></Settings>
-    </div>
-    <div class="flex py-6 sm:py-6 items-center">
-      <div class="text-center py-4">
-        <h1 class="text-green-500">Pass</h1>
-        <p>{{ GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount }}</p>
+      <div class="flex py-6 sm:py-6 items-center">
+        <div class="text-center py-4">
+          <h1 class="text-green-500">Pass</h1>
+          <p>{{ GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount }}</p>
+        </div>
+        <div class="grow px-4">
+          <UMeterGroup :min="0" :max="max" :ui="{ list: 'hidden' }">
+            <template #indicator>
+              <div v-if="GLOBAL_CONFIG.totalCount > 0" class="text-center">
+                {{ GLOBAL_CONFIG.currentCount }} / {{ GLOBAL_CONFIG.totalCount }}
+              </div>
+              <div v-else class="text-center">
+                ∞
+              </div>
+            </template>
+            <UMeter :value="GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount" color="sky" />
+            <UMeter :value="GLOBAL_CONFIG.mistakeCount" color="red" />
+          </UMeterGroup>
+          <p class="text-center text-gray-500 text-sm mt-2">{{ stringifyDuration(duration) }}</p>
+        </div>
+        <div class="text-center py-4">
+          <h1 class="text-red-500">Fail</h1>
+          <p>{{ GLOBAL_CONFIG.mistakeCount }}</p>
+        </div>
       </div>
-      <div class="grow px-4">
-        <UMeterGroup :min="0" :max="max" :ui="{ list: 'hidden' }">
-          <template #indicator>
-            <div v-if="GLOBAL_CONFIG.totalCount > 0" class="text-center">
-              {{ GLOBAL_CONFIG.currentCount }} / {{ GLOBAL_CONFIG.totalCount }}
-            </div>
-            <div v-else class="text-center">
-              ∞
-            </div>
-          </template>
-          <UMeter :value="GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount" color="sky" />
-          <UMeter :value="GLOBAL_CONFIG.mistakeCount" color="red" />
-        </UMeterGroup>
-        <p class="text-center text-gray-500 text-sm mt-2">{{ stringifyDuration(duration) }}</p>
+      <div class="pt-8 sm:pt-16 text-center">
+        <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4"
+          :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
+        <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline"
+          class="text-[30px]" @submit="onSubmit" />
+        <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
+          class="text-[30px] ml-4" @submit="onSubmit" />
       </div>
-      <div class="text-center py-4">
-        <h1 class="text-red-500">Fail</h1>
-        <p>{{ GLOBAL_CONFIG.mistakeCount }}</p>
+      <div class="flex justify-center items-center py-24 sm:mt-16">
+        <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
       </div>
     </div>
-    <div class="pt-8 sm:pt-16 text-center">
-      <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4"
-        :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
-      <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline"
-        class="text-[30px]" @submit="onSubmit" />
-      <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
-        class="text-[30px] ml-4" @submit="onSubmit" />
-    </div>
-    <div class="flex justify-center items-center py-24 sm:mt-16">
-      <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
+    <div class="grow" />
+    <div class="w-full flex">
+      <UButton color="gray" variant="ghost" size="xl" icon="i-uil-cog" @click="settingsOpen = true" />
+      <div class="grow" />
+      <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" />
     </div>
   </div>
+  <Settings v-model="settingsOpen" />
 </template>
 
 <script lang="ts" setup>
@@ -47,6 +53,8 @@ const max = GLOBAL_CONFIG.totalCount > 0 ? ref(GLOBAL_CONFIG.totalCount) : ref(G
 if (max.value === 0) {
   max.value = 1
 }
+
+const settingsOpen = ref(false)
 
 const blank = ref(generateBlank());
 const options = ref<string[]>();

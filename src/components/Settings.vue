@@ -46,7 +46,6 @@
 
 <script lang="ts" setup>
 const open = defineModel<boolean>()
-open.value = true
 const state = reactive(GLOBAL_CONFIG)
 setInterval(() => {
   if (open) {
