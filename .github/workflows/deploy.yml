@@ -16,7 +16,10 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
-      - run: corepack enable
+      - name: Set alternate npm integrity keys
+        run: |
+          echo COREPACK_INTEGRITY_KEYS="$(curl https://registry.npmjs.org/-/npm/v1/keys | jq -c '{npm: .keys}')" >> $GITHUB_ENV
+      - run: corepack enable pnpm
       # Pick your own package manager and build script
       - run: pnpm install
       - run: pnpm exec nuxi build --preset github_pages
