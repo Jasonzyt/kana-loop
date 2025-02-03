@@ -1,10 +1,10 @@
 <template>
   <UModal v-model="open">
     <UCard
-      :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: { padding: 'px-4 py-2.5 sm:py-3.5 sm:pl-6 sm:pr-5' }, body: { base: 'h-[50vh] overflow-y-scroll scrollbar' } }">
+      :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: { padding: 'px-4 py-2.5 sm:py-3.5 sm:pl-6 sm:pr-5' }, body: { base: 'overflow-y-scroll scrollbar' } }">
       <template #header>
         <div class="flex font-bold items-center">
-          <h1 class="grow">Settings</h1>
+          <h1 class="grow text-xl">Settings</h1>
           <UButton color="gray" variant="ghost" icon="i-ic-round-close" @click="open = false" />
         </div>
       </template>
@@ -34,10 +34,15 @@
           <UToggle v-model="state.blankKana" />
         </UFormGroup>
         <UFormGroup name="totalCount" label="Questions per Round (0 for endless)">
-          <UInput v-model="state.totalCount" type="number" class="mt-2" />
+          <UInput v-model="state.totalCount" type="number" class="mt-2"
+            @update:model-value="state._currentCountRef = state.totalCount" />
         </UFormGroup>
         <UFormGroup name="fonts" label="Use Custom Fonts">
-          <UInput v-model="state.fonts" class="mt-2" />
+          <UInput v-model="state.fonts" class="mt-2" @update:model-value="state._currentCountRef = state.totalCount" />
+        </UFormGroup>
+        <UFormGroup name="_" label="Clear Mistake History"
+          help="To enhance memorization, we will increase the probability of occurrence of the questions you got wrong">
+          <UButton color="red" @click="state.weights = {}">Clear</UButton>
         </UFormGroup>
       </UForm>
     </UCard>
