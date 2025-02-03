@@ -102,7 +102,7 @@ function insertRandomly(element: any, array: any[]) {
 
 export function generateOptions(oto: Oto, blankType: string): string[] {
   const otoType = HIRA_TO_OTO_TYPE[oto.hira];
-  const list = OTO_TYPE_TO_LIST[otoType];
+  const list = [...OTO_TYPE_TO_LIST[otoType]];
   list.splice(
     list.findIndex((o) => o.hira === oto.hira),
     1
