@@ -40,9 +40,31 @@
     </div>
     <div class="grow" />
     <div class="w-full flex">
-      <UButton color="gray" variant="ghost" size="xl" icon="i-uil-cog" @click="settingsOpen = true" />
+      <UPopover mode="hover">
+        <UButton color="gray" variant="ghost" size="xl" icon="i-uil-cog" @click="settingsOpen = true" />
+        <template #panel>
+          <div class="py-2 px-3 text-gray-700">
+            Settings
+          </div>
+        </template>
+      </UPopover>
+      <UPopover mode="hover">
+        <UButton color="gray" variant="ghost" size="xl" icon="i-ic-baseline-restart-alt" @click="restart" />
+        <template #panel>
+          <div class="py-2 px-3 text-gray-700">
+            Restart
+          </div>
+        </template>
+      </UPopover>
       <div class="grow" />
-      <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" />
+      <UPopover mode="hover">
+        <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" />
+        <template #panel>
+          <div class="py-2 px-3 text-gray-700">
+            Info
+          </div>
+        </template>
+      </UPopover>
     </div>
   </div>
   <Settings v-model="settingsOpen" />
@@ -72,6 +94,11 @@ const nextQuestion = () => {
   } else {
     kanaBlankRef.value?.$el.children[0].focus()
   }
+}
+const restart = () => {
+  GLOBAL_CONFIG.started = false;
+  GLOBAL_CONFIG.currentCount = 0;
+  GLOBAL_CONFIG.mistakeCount = 0;
 }
 onMounted(nextQuestion)
 
