@@ -83,7 +83,7 @@ const settingsOpen = ref(false)
 const infoOpen = ref(false)
 const showResult = ref(false)
 
-if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
+if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount && GLOBAL_CONFIG.totalCount !== 0) {
   showResult.value = true
 }
 
