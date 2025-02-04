@@ -155,9 +155,9 @@ const onSubmit = () => {
     blank.value.fill = blank.value.answer
     outline.value = "focus:ring-red-500"
     if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
-      setTimeout(finishRound, 500)
+      setTimeout(finishRound, GLOBAL_CONFIG.wrongWaitingTime)
     } else {
-      setTimeout(nextQuestion, 2000)
+      setTimeout(nextQuestion, GLOBAL_CONFIG.wrongWaitingTime)
     }
   } else {
     if (GLOBAL_CONFIG.weights[blank.value.answer.hira]) {
@@ -168,9 +168,9 @@ const onSubmit = () => {
     }
     outline.value = "focus:ring-green-500"
     if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
-      setTimeout(finishRound, 500)
+      setTimeout(finishRound, GLOBAL_CONFIG.correctWaitingTime)
     } else {
-      setTimeout(nextQuestion, 500)
+      setTimeout(nextQuestion, GLOBAL_CONFIG.correctWaitingTime)
     }
   }
   saveConfig()

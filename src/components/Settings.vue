@@ -1,7 +1,7 @@
 <template>
   <UModal v-model="open">
     <UCard
-      :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: { padding: 'px-4 py-2.5 sm:py-3.5 sm:pl-6 sm:pr-5' }, body: { base: 'overflow-y-scroll scrollbar' } }">
+      :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: { padding: 'px-4 py-2.5 sm:py-3.5 sm:pl-6 sm:pr-5' }, body: { base: 'h-[80vh] sm:h-[60vh] overflow-y-scroll scrollbar' } }">
       <template #header>
         <div class="flex font-bold items-center">
           <h1 class="grow text-xl">Settings</h1>
@@ -34,11 +34,23 @@
           <UToggle v-model="state.blankKana" />
         </UFormGroup>
         <UFormGroup name="totalCount" label="Questions per Round (0 for endless)">
-          <UInput v-model="state.totalCount" type="number" class="mt-2"
-            @update:model-value="state._currentCountRef = state.totalCount" />
+          <UInput v-model="state.totalCount" type="number" class="mt-2" />
         </UFormGroup>
         <UFormGroup name="fonts" label="Use Custom Fonts">
-          <UInput v-model="state.fonts" class="mt-2" @update:model-value="state._currentCountRef = state.totalCount" />
+          <UInput v-model="state.fonts" class="mt-2" />
+        </UFormGroup>
+        <UFormGroup name="optionCount" :ui="{ label: { base: 'w-full' } }">
+          <template #label>
+            <span>Number of Options</span>
+            <span class="float-right">{{ state.optionCount }}</span>
+          </template>
+          <URange :min="4" :max="12" :step="1" v-model="state.optionCount" />
+        </UFormGroup>
+        <UFormGroup name="correctWaitingTime" label="Waiting time after correct answer(in millisecond)">
+          <UInput v-model="state.correctWaitingTime" type="number" class="mt-2" />
+        </UFormGroup>
+        <UFormGroup name="wrongWaitingTime" label="Waiting time after wrong answer(in millisecond)">
+          <UInput v-model="state.wrongWaitingTime" type="number" class="mt-2" />
         </UFormGroup>
         <UFormGroup name="_" label="Clear Mistake History"
           help="To enhance memorization, we will increase the probability of occurrence of the questions you got wrong">

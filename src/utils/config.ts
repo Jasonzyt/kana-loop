@@ -16,7 +16,9 @@ class Config {
   public weights: Record<string, number> = {};
   public fonts: string = '"Noto Sans JP"';
   // public lastNoticeTime: string = "";
-  public optionCount: 4 | 6 | 8 | 10 | 12 = 6;
+  public optionCount: number = 6;
+  public correctWaitingTime: number = 500;
+  public wrongWaitingTime: number = 2000;
   [key: string]: any;
 
   public deserialize(jsonStr: string) {
