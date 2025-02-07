@@ -6,7 +6,7 @@ Can't memorize hira & kana? Try this!
 https://gojuon.jasonz.yt
 
 This App is **COMPLETELY** static. It uses GitHub Pages to distribute files.  
-All user data was storged in your local device. We **DO NOT** collect your data.
+All user data was stored in your local device. We **DO NOT** collect your data.
 
 ## Build
 To static webpage:
