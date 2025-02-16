@@ -26,12 +26,12 @@
       </div>
       <div v-if="!showResult">
         <div class="pt-8 sm:pt-16 text-center">
-          <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled :outline="outline" class="mr-4"
+          <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled class="mr-4"
             :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
-          <Blank v-model="blank.fill.hira" ref="hiraBlank" :disabled="blank.blank !== 'hira'" :outline="outline"
-            class="text-[30px]" @submit="onSubmit" />
-          <Blank v-model="blank.fill.kana" ref="kanaBlank" :disabled="blank.blank !== 'kana'" :outline="outline"
-            class="text-[30px] ml-4" @submit="onSubmit" />
+          <Blank v-model="blank.fill.hira" :disabled="blank.blank !== 'hira'"
+            :outline="blank.blank === 'hira' ? outline : ''" class="text-[30px]" @submit="onSubmit" />
+          <Blank v-model="blank.fill.kana" :disabled="blank.blank !== 'kana'"
+            :outline="blank.blank === 'kana' ? outline : ''" class="text-[30px] ml-4" @submit="onSubmit" />
         </div>
         <div class="flex justify-center items-center py-24 sm:mt-16">
           <OptionGroup :options="options" @choose="onChoose"></OptionGroup>
@@ -89,21 +89,13 @@ if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount && GLOBAL_CONFIG.tot
 
 const blank = ref(generateBlank());
 const options = ref<string[]>();
-const hiraBlankRef = useTemplateRef('hiraBlank')
-const kanaBlankRef = useTemplateRef('kanaBlank')
-const outline = ref('focus:ring-sky-500')
+const outline = ref('ring-sky-500')
 let submitted = false;
 
 const nextQuestion = () => {
-  outline.value = "focus:ring-sky-500"
+  outline.value = "ring-sky-500"
   blank.value = generateBlank()
   options.value = generateOptions(blank.value.answer, blank.value.blank)
-  // TODO: fix outline
-  if (blank.value.blank === 'hira') {
-    hiraBlankRef.value?.$el.children[0].focus()
-  } else {
-    kanaBlankRef.value?.$el.children[0].focus()
-  }
   submitted = false
 }
 const finishRound = () => {
@@ -123,11 +115,6 @@ onMounted(nextQuestion)
 const onChoose = (v: string) => {
   if (submitted) return
   (blank.value.fill as { [key: string]: string })[blank.value.blank] = v
-  if (blank.value.blank === 'hira') {
-    hiraBlankRef.value?.$el.children[0].focus()
-  } else {
-    kanaBlankRef.value?.$el.children[0].focus()
-  }
   setTimeout(onSubmit, 1000)
 }
 const onSubmit = () => {
@@ -135,8 +122,8 @@ const onSubmit = () => {
   let filled = (blank.value.fill as { [key: string]: string })[blank.value.blank]
   let answer = (blank.value.answer as { [key: string]: string })[blank.value.blank]
   if (filled === '') {
-    outline.value = "focus:ring-red-500"
-    setTimeout(() => outline.value = "focus:ring-sky-500", 2000)
+    outline.value = "ring-red-500"
+    setTimeout(() => outline.value = "ring-sky-500", 2000)
     return
   }
   GLOBAL_CONFIG.currentCount++
@@ -153,7 +140,7 @@ const onSubmit = () => {
       GLOBAL_CONFIG.weights[blank.value.answer.hira]++
     }
     blank.value.fill = blank.value.answer
-    outline.value = "focus:ring-red-500"
+    outline.value = "ring-red-500"
     if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
       setTimeout(finishRound, GLOBAL_CONFIG.wrongWaitingTime)
     } else {
@@ -166,7 +153,7 @@ const onSubmit = () => {
         delete GLOBAL_CONFIG.weights[blank.value.answer.hira]
       }
     }
-    outline.value = "focus:ring-green-500"
+    outline.value = "ring-green-500"
     if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
       setTimeout(finishRound, GLOBAL_CONFIG.correctWaitingTime)
     } else {
