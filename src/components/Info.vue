@@ -9,13 +9,9 @@
         </div>
       </template>
       <h2 class="text-md font-bold text-gray-900 dark:text-gray-100 mb-2">Tip</h2>
-      <p class="text-sm text-gray-800 dark:text-gray-200">For best results, make sure you have a basic understanding of
-        the 50
-        sounds.
-        You can write down the 50 sounds table several times to achieve it.</p>
-      <p class="text-sm text-gray-800 dark:text-gray-200">And you can modify the options in the settings to match your
-        stage
-        of learning.
+      <p class="text-sm text-gray-800 dark:text-gray-200">For best results, make sure you have a basic understanding of the 50 kanas.
+        You can write down the 50-kana table several times to achieve it.</p>
+      <p class="text-sm text-gray-800 dark:text-gray-200">And you can modify the options in the settings to match your stage of learning.
       </p>
       <br />
       <p class="text-gray-800 dark:text-gray-100">By <NuxtLink to="https://jasonz.yt"
