@@ -63,12 +63,7 @@
 
 <script lang="ts" setup>
 const open = defineModel<boolean>()
-const state = reactive(GLOBAL_CONFIG)
-setInterval(() => {
-  if (open) {
-    saveConfig()
-  }
-}, 1000)
+const state = useMyConfigStore()
 </script>
 
 <style>

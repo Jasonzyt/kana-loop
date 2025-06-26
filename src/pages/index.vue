@@ -4,13 +4,13 @@
       <div class="flex py-6 sm:py-6 items-center">
         <div class="text-center py-4">
           <h1 class="text-green-500">Pass</h1>
-          <p>{{ GLOBAL_CONFIG.currentCount - GLOBAL_CONFIG.mistakeCount }}</p>
+          <p>{{ config.currentCount - config.mistakeCount }}</p>
         </div>
         <div class="grow px-4">
-          <UProgress :min="0" :max="GLOBAL_CONFIG.totalCount" :value="GLOBAL_CONFIG.currentCount">
+          <UProgress :min="0" :max="config.totalCount" :value="config.currentCount">
             <template #indicator>
-              <div v-if="GLOBAL_CONFIG.totalCount > 0" class="text-center">
-                {{ GLOBAL_CONFIG.currentCount }} / {{ GLOBAL_CONFIG.totalCount }}
+              <div v-if="config.totalCount > 0" class="text-center">
+                {{ config.currentCount }} / {{ config.totalCount }}
               </div>
               <div v-else class="text-center">
                 ∞
@@ -21,12 +21,12 @@
         </div>
         <div class="text-center py-4">
           <h1 class="text-red-500">Fail</h1>
-          <p>{{ GLOBAL_CONFIG.mistakeCount }}</p>
+          <p>{{ config.mistakeCount }}</p>
         </div>
       </div>
       <div v-if="!showResult">
         <div class="pt-8 sm:pt-16 text-center">
-          <Blank v-if="GLOBAL_CONFIG.enableRomaji" v-model="blank.fill.romaji" disabled class="mr-4"
+          <Blank v-if="config.enableRomaji" v-model="blank.fill.romaji" disabled class="mr-4"
             :class="blank.fill.romaji.length > 2 ? 'text-[24px] ' : 'text-[30px] '" />
           <Blank v-model="blank.fill.hira" :disabled="blank.blank !== 'hira'"
             :outline="blank.blank === 'hira' ? outline : ''" class="text-[30px]" @submit="onSubmit" />
@@ -77,13 +77,13 @@
 </template>
 
 <script lang="ts" setup>
-loadConfig()
+const config = useMyConfigStore()
 
 const settingsOpen = ref(false)
 const infoOpen = ref(false)
 const showResult = ref(false)
 
-if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount && GLOBAL_CONFIG.totalCount !== 0) {
+if (config.currentCount === config.totalCount && config.totalCount !== 0) {
   showResult.value = true
 }
 
@@ -99,15 +99,15 @@ const nextQuestion = () => {
   submitted = false
 }
 const finishRound = () => {
-  GLOBAL_CONFIG.started = false
+  config.started = false
   showResult.value = true
 }
 const restart = () => {
   showResult.value = false
-  GLOBAL_CONFIG.started = false;
+  config.started = false;
   duration.value = 0;
-  GLOBAL_CONFIG.currentCount = 0;
-  GLOBAL_CONFIG.mistakeCount = 0;
+  config.currentCount = 0;
+  config.mistakeCount = 0;
   nextQuestion()
 }
 onMounted(nextQuestion)
@@ -126,53 +126,52 @@ const onSubmit = () => {
     setTimeout(() => outline.value = "ring-sky-500", 2000)
     return
   }
-  GLOBAL_CONFIG.currentCount++
+  config.currentCount++
   submitted = true
-  if (!GLOBAL_CONFIG.started) {
-    GLOBAL_CONFIG.startTime = Date.now()
-    GLOBAL_CONFIG.started = true
+  if (!config.started) {
+    config.startTime = Date.now()
+    config.started = true
   }
   if (answer !== filled) {
-    GLOBAL_CONFIG.mistakeCount++
-    if (GLOBAL_CONFIG.weights[blank.value.answer.hira] === undefined) {
-      GLOBAL_CONFIG.weights[blank.value.answer.hira] = 1
+    config.mistakeCount++
+    if (config.weights[blank.value.answer.hira] === undefined) {
+      config.weights[blank.value.answer.hira] = 1
     } else {
-      GLOBAL_CONFIG.weights[blank.value.answer.hira]++
+      config.weights[blank.value.answer.hira]++
     }
     blank.value.fill = blank.value.answer
     outline.value = "ring-red-500"
-    if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
-      setTimeout(finishRound, GLOBAL_CONFIG.wrongWaitingTime)
+    if (config.currentCount === config.totalCount) {
+      setTimeout(finishRound, config.wrongWaitingTime)
     } else {
-      setTimeout(nextQuestion, GLOBAL_CONFIG.wrongWaitingTime)
+      setTimeout(nextQuestion, config.wrongWaitingTime)
     }
   } else {
-    if (GLOBAL_CONFIG.weights[blank.value.answer.hira]) {
-      GLOBAL_CONFIG.weights[blank.value.answer.hira]--
-      if (GLOBAL_CONFIG.weights[blank.value.answer.hira] === 0) {
-        delete GLOBAL_CONFIG.weights[blank.value.answer.hira]
+    if (config.weights[blank.value.answer.hira]) {
+      config.weights[blank.value.answer.hira]--
+      if (config.weights[blank.value.answer.hira] === 0) {
+        delete config.weights[blank.value.answer.hira]
       }
     }
     outline.value = "ring-green-500"
-    if (GLOBAL_CONFIG.currentCount === GLOBAL_CONFIG.totalCount) {
-      setTimeout(finishRound, GLOBAL_CONFIG.correctWaitingTime)
+    if (config.currentCount === config.totalCount) {
+      setTimeout(finishRound, config.correctWaitingTime)
     } else {
-      setTimeout(nextQuestion, GLOBAL_CONFIG.correctWaitingTime)
+      setTimeout(nextQuestion, config.correctWaitingTime)
     }
   }
-  saveConfig()
 }
 
 const duration = ref(0)
 setInterval(() => {
-  if (GLOBAL_CONFIG.started) {
-    duration.value = Date.now() - GLOBAL_CONFIG.startTime
+  if (config.started) {
+    duration.value = Date.now() - config.startTime
   }
 }, 1000)
 </script>
 
 <style>
 body {
-  font-family: v-bind('GLOBAL_CONFIG.fonts'), 'Noto Sans JP', sans-serif;
+  font-family: v-bind('config.fonts'), 'Noto Sans JP', sans-serif;
 }
 </style>

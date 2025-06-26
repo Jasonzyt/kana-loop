@@ -1,4 +1,3 @@
-import { GLOBAL_CONFIG } from "./config";
 import {
   DAKUON_LIST,
   HIRA_TO_OTO,
@@ -24,31 +23,34 @@ function getHiraType(hira: string): OtoType | undefined {
 }
 
 function isOtoTypeEnabled(type: OtoType): boolean {
+  const config = useMyConfigStore();
   return (
-    (type === OtoType.seion && GLOBAL_CONFIG.enableSeion) ||
-    (type === OtoType.dakuon && GLOBAL_CONFIG.enableDakuon) ||
-    (type === OtoType.youon && GLOBAL_CONFIG.enableYouon)
+    (type === OtoType.seion && config.enableSeion) ||
+    (type === OtoType.dakuon && config.enableDakuon) ||
+    (type === OtoType.youon && config.enableYouon)
   );
 }
 
 function getFullList() {
+  const config = useMyConfigStore();
   let list: Oto[] = [];
-  if (GLOBAL_CONFIG.enableSeion) {
+  if (config.enableSeion) {
     list = list.concat(SEION_LIST);
   }
-  if (GLOBAL_CONFIG.enableDakuon) {
+  if (config.enableDakuon) {
     list = list.concat(DAKUON_LIST);
   }
-  if (GLOBAL_CONFIG.enableYouon) {
+  if (config.enableYouon) {
     list = list.concat(YOUON_LIST);
   }
   return list;
 }
 
 function getWeightedList() {
+  const config = useMyConfigStore();
   let result = getFullList();
-  Object.keys(GLOBAL_CONFIG.weights).forEach((k) => {
-    let weight = GLOBAL_CONFIG.weights[k];
+  Object.keys(config.weights).forEach((k) => {
+    let weight = config.weights[k];
     const type = getHiraType(k);
     if (type && weight > 0 && isOtoTypeEnabled(type)) {
       let oto = searchOtoByHira(k);
@@ -63,14 +65,15 @@ function getWeightedList() {
 }
 
 function getRandomBlankType() {
+  const config = useMyConfigStore();
   const types = [];
-  if (GLOBAL_CONFIG.blankHira) {
+  if (config.blankHira) {
     types.push("hira");
   }
-  if (GLOBAL_CONFIG.blankKana) {
+  if (config.blankKana) {
     types.push("kana");
   }
-  // if (GLOBAL_CONFIG.enableRomaji && GLOBAL_CONFIG.blankRomaji) {
+  // if (config.enableRomaji && config.blankRomaji) {
   //   types.push("romaji");
   // }
   return types[Math.floor(Math.random() * types.length)];
@@ -101,6 +104,7 @@ function insertRandomly(element: any, array: any[]) {
 }
 
 export function generateOptions(oto: Oto, blankType: string): string[] {
+  const config = useMyConfigStore();
   const otoType = HIRA_TO_OTO_TYPE[oto.hira];
   const list = [...OTO_TYPE_TO_LIST[otoType]];
   list.splice(
@@ -111,16 +115,12 @@ export function generateOptions(oto: Oto, blankType: string): string[] {
   switch (blankType) {
     case "hira":
       result.push(
-        ...selectRandomly(list, GLOBAL_CONFIG.optionCount - 1).map(
-          (o) => o.hira
-        )
+        ...selectRandomly(list, config.optionCount - 1).map((o) => o.hira)
       );
       break;
     case "kana":
       result.push(
-        ...selectRandomly(list, GLOBAL_CONFIG.optionCount - 1).map(
-          (o) => o.kana
-        )
+        ...selectRandomly(list, config.optionCount - 1).map((o) => o.kana)
       );
       break;
     default:
