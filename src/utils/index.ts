@@ -6,7 +6,7 @@ import {
   SEION_LIST,
   YOUON_LIST,
   type Oto,
-} from "./gojuon";
+} from "./kanas";
 
 export type Blank = {
   fill: Oto;

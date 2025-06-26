@@ -22,7 +22,7 @@
           class="text-sky-500 hover:text-sky-600">
           @Jasonzyt
         </NuxtLink>. Project at
-        <NuxtLink to="https://github.com/Jasonzyt/crazy-gojuon">
+        <NuxtLink to="https://github.com/Jasonzyt/kana-loop">
           <Icon name="uil:github" />
         </NuxtLink>.
         Star it if you like~
