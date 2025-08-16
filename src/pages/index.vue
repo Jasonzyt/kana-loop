@@ -63,6 +63,14 @@
       </UPopover>
       <div class="grow" />
       <UPopover mode="hover">
+        <UButton color="gray" variant="ghost" size="xl" icon="i-uil-github" @click="window.location.href = 'https://github.com/Jasonzyt/kana-loop'" />
+        <template #panel>
+          <div class="py-2 px-3 text-gray-700 dark:text-gray-300">
+            GitHub
+          </div>
+        </template>
+      </UPopover>
+      <UPopover mode="hover">
         <UButton color="gray" variant="ghost" size="xl" icon="i-uil-info-circle" @click="infoOpen = true" />
         <template #panel>
           <div class="py-2 px-3 text-gray-700 dark:text-gray-300">
